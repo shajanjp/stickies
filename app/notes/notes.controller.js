@@ -2,7 +2,17 @@ const noteService = require('./notes.service.js');
 const noteDTO = require('./notes.dto.js');
 
 function noteById(req, res, next, noteId){
-  next()
+  noteService.noteById(noteId)
+  .then(noteFound => {
+    res.locals.noteId = noteFound._id;
+    next();
+  })
+  .catch(error => {
+    res.status(400)
+    .json({
+      error: error
+    })
+  })
 }
 
 function listNotes(req, res){
@@ -34,15 +44,42 @@ function insertNote(req, res){
 }
 
 function updateNote(req, res){
-  res.json({});
+  noteService.updateNote({ _id: res.locals.noteId }, noteDTO(req.body))
+  .then(noteUpdated => {
+    res.json({});
+  })
+  .catch(error => {
+    res.status(500)
+    .json({
+      error: error || 'Something went wrong'
+    })
+  })
 }
 
 function removeNote(req, res){
-  res.json({});
+  noteService.removeNote({ _id: res.locals.noteId })
+  .then(noteRemoved => {
+    res.json({});
+  })
+  .catch(error => {
+    res.status(500)
+    .json({
+      error: error || 'Something went wrong'
+    })
+  })
 }
 
 function getNote(req, res){
-  res.json({});
+  noteService.getNote(res.locals.noteId)
+  .then(noteFound => {
+    res.json(noteDTO(noteFound));
+  })
+  .catch(error => {
+    res.status(500)
+    .json({
+      error: error || 'Something went wrong'
+    })
+  }) 
 }
 
 module.exports = {
