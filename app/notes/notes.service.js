@@ -1,7 +1,16 @@
 const Notes = require('./notes.model.js');
 
-function noteById(){
-
+function noteById(noteId){
+  return new Promise((resolve, reject) => {    
+    Notes.findOne({ _id: noteId }, function (err, noteFound) {
+      if(noteFound){
+        resolve(noteFound)
+      }
+      else{
+        reject(err || 'Note id is not available');
+      }
+    });
+  })
 }
 
 function listNotes(query = {}){
@@ -57,7 +66,7 @@ function removeNote(query, options = {}){
 }
 
 function getNote(noteId){
-  return listNotes({_id: noteId});
+  return noteById(noteId);
 }
 
 module.exports = {
