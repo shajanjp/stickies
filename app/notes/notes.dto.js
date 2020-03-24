@@ -1,9 +1,12 @@
 function noteDTO(data){
-  return {
-    title : data.title,
-    content : data.content,
-    labels : data.labels
-  }
+  let note = {};
+  const keys = ['title', 'content', 'labels'];
+  keys.forEach(k => {
+    if(data.hasOwnProperty(k)){
+      note[k] = data[k];
+    }
+  })
+  return note;
 }
 
 module.exports = noteDTO;
